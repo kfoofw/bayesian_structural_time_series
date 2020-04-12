@@ -24,3 +24,5 @@ The following packages may be used in this learning repo:
 - [bsts](https://cran.r-project.org/web/packages/bsts/index.html)
 - [CausalImpact](https://github.com/google/CausalImpact)
 - [MarketMatching](https://cran.r-project.org/web/packages/MarketMatching/index.html)
+- [tidyverse](https://cran.r-project.org/web/packages/tidyverse/index.html)
+- [tidyquant](https://cran.r-project.org/web/packages/tidyquant/index.html)
