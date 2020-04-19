@@ -1,4 +1,4 @@
-# http://www.unofficialgoogledatascience.com/2017/07/fitting-bayesian-structural-time-series.html?m=1
+  # http://www.unofficialgoogledatascience.com/2017/07/fitting-bayesian-structural-time-series.html?m=1
 library(bsts)
 data(iclaims)
 
@@ -82,5 +82,5 @@ pred2 <- predict(model2, horizon = 360)
 plot(pred1, plot.original = 360, ylim = range(pred1))
 # Stationary AR where the trend component
 plot(pred3, plot.original = 360, ylim = range(pred1))
-# Semi Local linear has a lot more flexibility but exponential variance
+# Semi Local linear has a lot less projected uncertainty
 plot(pred2, plot.original = 360, ylim = range(pred1))
