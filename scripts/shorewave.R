@@ -54,7 +54,8 @@ CompareBstsModels(list("Model 1" = model1,
 ##### Aggregation by Weekly data
 dat_train_week <- dat_train %>% 
     group_by(week = cut(time_Y_m_d, "week")) %>%
-    summarise(shoreline = mean(shoreline, na.rm = TRUE)) 
+    summarise(shoreline = mean(shoreline, na.rm = TRUE)) %>%
+    mutate(week = as.Date(as.character(week)))
 
 shore_train_week <-zoo(dat_train_week$shoreline,
                        strptime(dat_train_week$week, '%Y-%m-%d'))
@@ -67,4 +68,4 @@ ss1_week <- AddLocalLinearTrend(ss1_week, shore_train_week)
 ss1_week <- AddSeasonal(ss1_week, shore_train_week, nseasons = 52, season.duration = 1)
 model1_week <- bsts(shore_train_week,
                     state.specification = ss1_week,
-                    niter = 1000)
+                    niter = 500)

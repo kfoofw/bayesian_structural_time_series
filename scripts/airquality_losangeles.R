@@ -3,8 +3,8 @@ library(CausalImpact)
 library(tidyverse)
 library(zoo)
 
-
-dat <- read_csv("data/airquality_northvan.csv")
+# Los Angeles City data: PM 2.5
+dat <- read_csv("data/airquality_losangeles.csv")
 
 dat_pm25_wk <- dat %>% 
   mutate(date = as.Date(date)) %>%
@@ -16,31 +16,31 @@ dat_pm25_wk <- dat %>%
 dat_pm25_wk <- dat_pm25_wk %>%
   mutate(index = row_number())
 
-# Missing NA for 1 week
-dat_pm25_wk %>%
-  filter(is.na(pm25))
-
-# Calculate mean of before and after week for the NA week data
-imputed_mean <- dat_pm25_wk %>% 
-  filter(index ==138 |index == 140) %>%
-  summarise(mean_impute = mean(pm25)) %>%
-  pull()
-
-# Replace data with ifelse condition 
-dat_pm25_wk <- dat_pm25_wk %>%
-  mutate(pm25 = replace(pm25, is.na(pm25), imputed_mean))
-
-# Check if missing data still exists
-dat_pm25_wk %>%
-  filter(is.na(pm25))
-
-# Create ts zoo data
-ts_pm25_wk <- zoo(dat_pm25_wk$pm25, dat_pm25_wk$week)
-
-plot(ts_pm25_wk)
-
+# Visual plot to see data trend
 ggplot(dat_pm25_wk, aes(x = week, y = pm25))+
   geom_point()
+
+# Missing Data for Nov to Dec 2015
+dat_pm25_wk %>%
+  filter(is.na(pm25))
+
+# Note erroneous data outlier where pm25 was 822
+dat_pm25_wk %>%
+  filter(pm25 > 500)
+
+# Filter data to exclude time period before mid Jan 2016.
+dat_pm25_wk_trunc <- dat_pm25_wk %>%
+  filter(week > as.Date("2016-01-04"))
+
+# Visual plot to see data trend
+ggplot(dat_pm25_wk_trunc, aes(x = week, y = pm25))+
+  geom_point() + 
+  geom_line()
+
+# Create ts zoo data
+ts_pm25_wk <- zoo(dat_pm25_wk_trunc$pm25, dat_pm25_wk_trunc$week)
+
+plot(ts_pm25_wk)
 
 # Local trend, weekly-seasonal
 ss <- AddLocalLinearTrend(list(), ts_pm25_wk)
@@ -92,3 +92,39 @@ CompareBstsModels(list("Model 1" = model1,
                        "Model 3" = model3,
                        "Model 4" = model4),
                   colors = c("black", "red","blue","green"))
+
+##### 
+# Causal impact of social distancing
+library(CausalImpact)
+
+pre.period <- as.Date(c("2016-01-11", "2020-03-10"))
+post.period <- as.Date(c("2020-03-11", "2020-04-16"))
+
+# Create bsts model based on pre-period data while imputing NA points on post period
+# Choose model 3
+dat_pm25_wk_trunc_causal <- dat_pm25_wk_trunc %>% 
+  mutate(pm25 = replace(pm25, week >= as.Date("2020-03-01"), NA))
+
+# Obtain post period data
+dat_pm25_wk_trunc_post <- dat_pm25_wk_trunc %>% 
+  filter(week >= as.Date("2020-03-01"))
+
+# Create zoo object based on index data
+ts_pm25_wk_pre <- zoo(dat_pm25_wk_trunc_causal$pm25, dat_pm25_wk_trunc_causal$week)
+
+# Local trend, weekly-seasonal
+ss3_causal <- AddSemilocalLinearTrend(list(), ts_pm25_wk_pre)
+# Add weekly seasonal
+ss3_causal <- AddSeasonal(ss3_causal, ts_pm25_wk_pre, nseasons = 52)
+causal_model3 <- bsts(ts_pm25_wk_pre,
+                      state.specification = ss3_causal,
+                      niter = 1000)
+plot(causal_model3)
+plot(causal_model3, "components")
+
+
+impact <- CausalImpact(bsts.model = causal_model3,
+                       post.period.response = dat_pm25_wk_trunc_post$pm25)
+plot(impact)
+
+

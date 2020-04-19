@@ -17,6 +17,7 @@ Package papers and tutorials:
 - [Predicting the Present with Bayesian Structural Time Series](http://people.ischool.berkeley.edu/~hal/Papers/2013/pred-present-with-bsts.pdf)
 - [INFERRING CAUSAL IMPACT USING BAYESIAN STRUCTURAL TIME-SERIES MODELS](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/41854.pdf)
 - [R package bsts tutorial](http://hedibert.org/wp-content/uploads/2016/05/bsts-tutorial.pdf)
+- [Causal Impact using Bayesian Structural Time-Series Models](https://rstudio-pubs-static.s3.amazonaws.com/348164_d03363ac0c864fe7885343d3c58eda2a.html)
 
 # R packages
 
@@ -26,3 +27,9 @@ The following packages may be used in this learning repo:
 - [MarketMatching](https://cran.r-project.org/web/packages/MarketMatching/index.html)
 - [tidyverse](https://cran.r-project.org/web/packages/tidyverse/index.html)
 - [tidyquant](https://cran.r-project.org/web/packages/tidyquant/index.html)
+
+# Datasets
+
+For my analysis, I used the following data sources:
+- [Los Angeles Air Quality Data](https://aqicn.org/city/losangeles/los-angeles-north-main-street/)
+- [Los Angeles Gasoline Pricing](https://www.eia.gov/opendata/qb.php?sdid=PET.EMM_EPM0_PTE_Y05LA_DPG.W) 
