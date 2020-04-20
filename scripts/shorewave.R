@@ -53,9 +53,10 @@ CompareBstsModels(list("Model 1" = model1,
 
 ##### Aggregation by Weekly data
 dat_train_week <- dat_train %>% 
-    group_by(week = cut(time_Y_m_d, "week")) %>%
-    summarise(shoreline = mean(shoreline, na.rm = TRUE)) %>%
-    mutate(week = as.Date(as.character(week)))
+  group_by(week = cut(time_Y_m_d, "week")) %>%
+  summarise(shoreline = mean(shoreline, na.rm = TRUE)) %>%
+  # Unfactor the date
+  mutate(week = as.Date(as.character(week)))
 
 shore_train_week <-zoo(dat_train_week$shoreline,
                        strptime(dat_train_week$week, '%Y-%m-%d'))
