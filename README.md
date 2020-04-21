@@ -32,4 +32,3 @@ The following packages may be used in this learning repo:
 
 For my analysis, I used the following data sources:
 - [Los Angeles Air Quality Data](https://aqicn.org/city/losangeles/los-angeles-north-main-street/)
-- [Los Angeles Gasoline Pricing](https://www.eia.gov/opendata/qb.php?sdid=PET.EMM_EPM0_PTE_Y05LA_DPG.W) 

@@ -43,11 +43,11 @@ ggplot(dat_pm25_wk, aes(x = week, y = pm25))+
        y = "PM 2.5")
 
 # Post Period of  early march
-dat_pm25_wk_trunc_causal <- dat_pm25_wk_trunc %>% 
+dat_pm25_wk_causal <- dat_pm25_wk %>% 
   mutate(pm25 = replace(pm25, week >= as.Date("2020-03-04"), NA))
 
 # Create ts zoo data
-ts_pm25_wk <- zoo(dat_pm25_wk_trunc_causal$pm25, dat_pm25_wk_trunc_causal$week)
+ts_pm25_wk <- zoo(dat_pm25_wk_causal$pm25, dat_pm25_wk_causal$week)
 
 plot(ts_pm25_wk)
 
