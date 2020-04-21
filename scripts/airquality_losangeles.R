@@ -36,9 +36,11 @@ dat_pm25_wk <- dat_pm25_wk %>%
 
 # Visual plot to see data trend
 ggplot(dat_pm25_wk, aes(x = week, y = pm25))+
-  geom_point() + 
-  geom_line() + 
+  geom_vline(xintercept = as.Date("2020-03-04"), color = "blue", lty = "dashed") +
+  geom_point(color = "red") + 
+  geom_line(alpha = 0.4) + 
   labs(title = "LA PM2.5 data from mid Jan 2016 to April 2020",
+       subtitle = "Public Health Emergency declared on 4th March 2020 (dotted blue line)",
        x = "Date",
        y = "PM 2.5")
 
