@@ -8,7 +8,7 @@ I was always interested in learning the Bayesian Structured Time Series (BSTS) m
 In this article, I will be assessing the air quality of Los Angeles city and the impact of the quarantine. The following points frame my analysis:
 - The type of air quality used for this analysis is the PM2.5, which stands for atmospheric particulate matter with a diameter of less than 2.5 micrometers. 
 - The implementation of the quarantine will be perceived as an "intervention". The date of this intervention will be explained in more detail.
-- Los Angeles was chosen because it is such an iconic city that is bustling with activity. Not only that, it is also know for its traffic congestion which contributes to the PM 2.5 levels.
+- Los Angeles was chosen because it is such an iconic city that is bustling with activity. Not only that, it is also known for its traffic congestion which I postulate to be a contributing factor to the PM 2.5 levels.
 - The air quality data will be aggregated by calendar week
 
 ## Data Source 
@@ -314,7 +314,8 @@ For a further look at the report, we can run the following code which generates 
 summary(impact, "report")
 ```
 
-"Analysis report {CausalImpact}
+```
+Analysis report {CausalImpact}
 
 
 During the post-intervention period, the response variable had an average value of approx. 28.11. By contrast, in the absence of an intervention, we would have expected an average response of 50.15. The 95% interval of this counterfactual prediction is [33.14, 66.30]. Subtracting this prediction from the observed response yields an estimate of the causal effect the intervention had on the response variable. This effect is -22.04 with a 95% interval of [-38.20, -5.03]. For a discussion of the significance of this effect, see below.
@@ -325,7 +326,8 @@ The above results are given in terms of absolute numbers. In relative terms, the
 
 This means that the negative effect observed during the intervention period is statistically significant. If the experimenter had expected a positive effect, it is recommended to double-check whether anomalies in the control variables may have caused an overly optimistic expectation of what should have happened in the response variable in the absence of the intervention.
 
-The probability of obtaining this effect by chance is very small (Bayesian one-sided tail-area probability p = 0.006). This means the causal effect can be considered statistically significant. "
+The probability of obtaining this effect by chance is very small (Bayesian one-sided tail-area probability p = 0.006). This means the causal effect can be considered statistically significant.
+```
 
 ## Limitations
 
