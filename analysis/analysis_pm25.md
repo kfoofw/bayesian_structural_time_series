@@ -1,14 +1,12 @@
 
 # Causal Analysis of PM 2.5 Air Quality in Los Angeles During Quarantine using CausalImpact and BSTS
 
-With the recent COVID-19 pandemic, the implementation of quarantine and social distancing by various governments created a ripple of effects that affect cities all around the world. The key driver behind this was the halting of economic activity which brought about a big crunch in the global economy. In the early phase of the COVID-19 crisis, the media reported that [the carbon emissions in China was reduced drastically](https://www.nytimes.com/2020/02/26/climate/nyt-climate-newsletter-coronavirus.html) in mid Feb 2020.  This gave me an idea as I wanted to try out some time series analysis on air quality in certain cities with the implementation of a quarantine. 
-
-I was always interested in learning the Bayesian Structured Time Series (BSTS) methodology for time series analysis, and had been doing some research on the `bsts` package. Going down the rabbit hole, I found another package called `CausalImpact` that was developed on top of the `bsts` package which allows for causal analysis of time series experiments. Although relatively unknown, both packages were developed by the smart guys working at Google. If you haven't heard about them, I highly encourage you to check them out.
+With the recent COVID-19 pandemic, the implementation of quarantine and social distancing by various governments created a ripple of effects that affect cities all around the world. The key driver behind this was the halting of economic activity which brought about a big crunch in the global economy. In the early phase of the COVID-19 crisis, the media reported that [the carbon emissions in China was reduced drastically](https://www.nytimes.com/2020/02/26/climate/nyt-climate-newsletter-coronavirus.html) in mid Feb 2020.  This gave me an idea as I wanted to try out some time series analysis on air quality in certain cities with the implementation of a city-wide quarantine measure. 
 
 In this article, I will be assessing the air quality of Los Angeles city and the impact of the quarantine. The following points frame my analysis:
 - The type of air quality used for this analysis is the PM2.5, which stands for atmospheric particulate matter with a diameter of less than 2.5 micrometers. 
 - The implementation of the quarantine will be perceived as an "intervention". The date of this intervention will be explained in more detail.
-- Los Angeles was chosen because it is such an iconic city that is bustling with activity. Not only that, it is also known for its traffic congestion which I postulate to be a contributing factor to the PM 2.5 levels.
+- Los Angeles was chosen because it is such an iconic city that is typically bustling with activity. It is also known for its traffic congestion which I postulate to be a contributing factor to the PM 2.5 levels.
 - The air quality data will be aggregated by calendar week
 
 ## Data Source 
@@ -148,17 +146,24 @@ dat_pm25_wk_causal <- dat_pm25_wk %>%
 ts_pm25_wk <- zoo(dat_pm25_wk_causal$pm25, dat_pm25_wk_causal$week)
 ```
 
-With the data set edited with NA for the post intervention period, let's take a look at the different models.
+With the data set edited with NA for the post intervention period, let's take a look at the different models. The modelling process can be broken down into the following:
+- Initiate model specifications object with an empty list.
+- Add a trend component (local linear or semi local linear)
+- Add a 52-weekly seasonal component (and Quasi-monthly if required)
+- Create a `bsts` model with total of 1500 MCMC samplings but with 500 burn-in steps.
+
 
 ```{r}
 # Model 1
+ss <- list()
 # Local trend, weekly-seasonal
-ss <- AddLocalLinearTrend(list(), ts_pm25_wk)
+ss <- AddLocalLinearTrend(ss, ts_pm25_wk)
 # Add weekly seasonal
 ss <- AddSeasonal(ss, ts_pm25_wk, nseasons = 52)
 model1 <- bsts(ts_pm25_wk,
                state.specification = ss,
-               niter = 1000)
+               niter = 1500,
+               burn = 500)
 plot(model1, main = "Model 1")
 plot(model1, "components")
 ```
@@ -172,16 +177,19 @@ plot(model1, "components")
 </div>
 
 ```{r}
+# Model 2
+ss2 <- list()
 # Local trend, weekly-seasonal, monthly-seasonal
-ss2 <- AddLocalLinearTrend(list(), ts_pm25_wk)
+ss2 <- AddLocalLinearTrend(ss2, ts_pm25_wk)
 # Add weekly seasonal
 ss2 <- AddSeasonal(ss2, ts_pm25_wk, nseasons = 52)
 # Add monthly seasonal
 ss2 <- AddSeasonal(ss2, ts_pm25_wk, nseasons = 13, season.duration = 4)
 model2 <- bsts(ts_pm25_wk,
                state.specification = ss2,
-               niter = 1000)
-plot(model2, main = "Model 1")
+               niter = 1500,
+               burn = 500)
+plot(model2, main = "Model 2")
 plot(model2, "components")
 ```
 <div align = "center">
@@ -193,13 +201,16 @@ plot(model2, "components")
 </div>
 
 ```{r}
+# Model 3
+ss3 <- list()
 # Semi Local trend, weekly-seasonal
-ss3 <- AddSemilocalLinearTrend(list(), ts_pm25_wk)
+ss3 <- AddSemilocalLinearTrend(ss3, ts_pm25_wk)
 # Add weekly seasonal
 ss3 <- AddSeasonal(ss3, ts_pm25_wk, nseasons = 52)
 model3 <- bsts(ts_pm25_wk,
                state.specification = ss3,
-               niter = 1000)
+               niter = 1500,
+               burn = 500)
 plot(model3, main = "Model 3")
 plot(model3, "components")
 ```
@@ -212,15 +223,18 @@ plot(model3, "components")
 </div>
 
 ```{r}
+# Model 4
+ss4 <- list()
 # Semi Local trend, weekly-seasonal, monthly-seasonal
-ss4 <- AddSemilocalLinearTrend(list(), ts_pm25_wk)
+ss4 <- AddSemilocalLinearTrend(ss4, ts_pm25_wk)
 # Add weekly seasonal
 ss4 <- AddSeasonal(ss4, ts_pm25_wk, nseasons = 52)
 # Add monthly seasonal
 ss4 <- AddSeasonal(ss4, ts_pm25_wk, nseasons = 13, season.duration = 4)
 model4 <- bsts(ts_pm25_wk,
                state.specification = ss4,
-               niter = 1000)
+               niter = 1500,
+               burn = 500)
 plot(model4, main = "Model 4")
 plot(model4, "components")
 ```
@@ -232,21 +246,43 @@ plot(model4, "components")
     <img src=../img/model4_comp.png>
 </div>
 
-The model plots provide the MCMC sampling of the structured time series given the observed data. The extent of shading reflects the posterior probability of the time series path under multiple simulations.
+The plots provide the MCMC sampling of the structured time series given the observed data. The extent of shading reflects the posterior probability of the time series path under multiple simulations.
 
 Based on the models, we see that the local linear trend was much smoother compared to the semi local linear trend. This could be due to the fact that the drift component in the semi local linear trend comprised of more variables (D, ρ) that allowed for more extreme stochasticity. This allowed for the semi-local linear trend models to capture certain high spike points such as in Jan 2018 that were not captured by the trends in the local linear trend models. 
 
+This is also manifested in the difference in the seasonal components between Model 1 and Model 3. Model 1 (local linear) attributes more of the high-deviation spikes to the 52 weekly seasonal component, but Model 3 (semi local linear) attributes those high-deviation spikes to be more of a trend stochasticity.
+
+```{r}
+# Compare seasonal component of model 1 and model 3
+# Model 1
+plot(model1$state.specification[[2]], model1,ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+par(new=TRUE)
+plot(components1$Date, components1$Seasonality, col = "magenta", type = "l", ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+abline(h = 10, col = "red")
+abline(h = -10, col = "red")
+
+# Model 3
+plot(model3$state.specification[[2]], model3,ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+par(new=TRUE)
+plot(components3$Date, components3$Seasonality, col = "magenta", type = "l", ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+abline(h = 10, col = "red")
+abline(h = -10, col = "red")
+```
+
 <div align = "center">
-    <h> Model 1 (Local Linear) Components</h>
-    <img src=../img/model1_comp.png>
+    <h> Model 1 (Local Linear) Seasonal Components</h>
+    <img src=../img/model1_season.png>
 </div>
 
 <div align = "center">
     <h> Model 3 (Semi-Local Linear) Components</h>
-    <img src=../img/model3_comp.png>
+    <img src=../img/model3_season.png>
 </div>
 
-This is also manifested in the difference in the seasonal components between Model 1 and Model 3. Model 1 (local linear) attributes more of the high spikes to the 52 weekly seasonal component, but Model 3 (semi local linear) attributes those high spikes to be more of a trend stochasticity.
 
 Using the cumulative absolute error of 1 step prediction forward prediction of the different models, we see that Model 3 (dotted blue) is the best model as it has the lowest cumulative error while Model 2 (dashed red) has the highest cumulative error.
 
@@ -254,7 +290,7 @@ Using the cumulative absolute error of 1 step prediction forward prediction of t
     <img src=../img/models_compare.png>
 </div>
 
-Based on that, we will use Model 3 to generate the counterfactual baseline for the Causal Analysis in the next section.
+Based on that, we will use Model 3 to generate the counterfactual baseline for the Causal Analysis in the next section. At the same time, it is worth mentioning that the extra "Quasi-Monthly" seasonality (present in Models 2 and 4) was not incrementally useful compared to the base 52-weekly seasonality (present in Models 1 and 3) which was sufficient.
 
 ## Causal Analysis of Public Health Emergencies Measures on PM 2.5 Air
 
