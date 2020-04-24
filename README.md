@@ -8,6 +8,9 @@ Links to readings will be kept on this README document for reference.
 
 1. [Causal Analysis of PM 2.5 Air Quality in Los Angeles During Quarantine using CausalImpact and BSTS](https://github.com/kfoofw/bayesian_structured_time_series/blob/master/analysis/analysis_pm25.md)
 
+<div align="center">
+    <img src= ./img/causal_impact.png width=400>
+</div>
 
 # Readings
 
