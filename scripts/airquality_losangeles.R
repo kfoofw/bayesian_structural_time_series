@@ -53,50 +53,103 @@ ts_pm25_wk <- zoo(dat_pm25_wk_causal$pm25, dat_pm25_wk_causal$week)
 
 plot(ts_pm25_wk)
 
+# Model 1
+ss <- list()
 # Local trend, weekly-seasonal
-ss <- AddLocalLinearTrend(list(), ts_pm25_wk)
+ss <- AddLocalLinearTrend(ss, ts_pm25_wk)
 # Add weekly seasonal
 ss <- AddSeasonal(ss, ts_pm25_wk, nseasons = 52)
 model1 <- bsts(ts_pm25_wk,
                state.specification = ss,
-               niter = 1000)
-plot(model1, main = "Model 1", ylim = c(20,100))
-plot(model1, "components", ylim = c(-20, 80))
+               niter = 1500,
+               burn = 500)
+plot(model1, main = "Model 1")
+plot(model1, "components")
 
+# Model 2
+ss2 <- list()
 # Local trend, weekly-seasonal, monthly-seasonal
-ss2 <- AddLocalLinearTrend(list(), ts_pm25_wk)
+ss2 <- AddLocalLinearTrend(ss2, ts_pm25_wk)
 # Add weekly seasonal
 ss2 <- AddSeasonal(ss2, ts_pm25_wk, nseasons = 52)
 # Add monthly seasonal
 ss2 <- AddSeasonal(ss2, ts_pm25_wk, nseasons = 13, season.duration = 4)
 model2 <- bsts(ts_pm25_wk,
                state.specification = ss2,
-               niter = 1000)
-plot(model2, main = "Model 2", ylim = c(20,100))
-plot(model2, "components", ylim = c(-20,80))
+               niter = 1500,
+               burn = 500)
+plot(model2, main = "Model 2")
+plot(model2, "components")
 
+# Model 3
+ss3 <- list()
 # Semi Local trend, weekly-seasonal
-ss3 <- AddSemilocalLinearTrend(list(), ts_pm25_wk)
+ss3 <- AddSemilocalLinearTrend(ss3, ts_pm25_wk)
 # Add weekly seasonal
 ss3 <- AddSeasonal(ss3, ts_pm25_wk, nseasons = 52)
 model3 <- bsts(ts_pm25_wk,
                state.specification = ss3,
-               niter = 1000)
-plot(model3, main = "Model 3", ylim = c(20,100))
-plot(model3, "components", ylim = c(-20,80))
+               niter = 1500,
+               burn = 500)
+plot(model3, main = "Model 3")
+plot(model3, "components")
 
+# Model 4
+ss4 <- list()
 # Semi Local trend, weekly-seasonal, monthly-seasonal
-ss4 <- AddSemilocalLinearTrend(list(), ts_pm25_wk)
+ss4 <- AddSemilocalLinearTrend(ss4, ts_pm25_wk)
 # Add weekly seasonal
 ss4 <- AddSeasonal(ss4, ts_pm25_wk, nseasons = 52)
 # Add monthly seasonal
 ss4 <- AddSeasonal(ss4, ts_pm25_wk, nseasons = 13, season.duration = 4)
 model4 <- bsts(ts_pm25_wk,
                state.specification = ss4,
-               niter = 1000)
-plot(model4, main = "Model 4", ylim = c(20,100))
-plot(model4, "components", ylim = c(-20,80))
+               niter = 1500,
+               burn = 500)
+plot(model4, main = "Model 4")
+plot(model4, "components")
 
+# Compare seasonal component of model 1 and model 3
+# Model 1
+plot(model1$state.specification[[2]], model1,ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+par(new=TRUE)
+plot(components1$Date, components1$Seasonality, col = "magenta", type = "l", ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+abline(h = 10, col = "red")
+abline(h = -10, col = "red")
+
+# Model 3
+plot(model3$state.specification[[2]], model3,ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+par(new=TRUE)
+plot(components3$Date, components3$Seasonality, col = "magenta", type = "l", ylim = c(-30,30),
+     ylab = "Distribution", xlab = "Date")
+abline(h = 10, col = "red")
+abline(h = -10, col = "red")
+
+
+components1 = cbind.data.frame(
+  colMeans(model1$state.contributions[-(1:500),"trend",]),
+  colMeans(model1$state.contributions[-(1:500),"seasonal.52.1",]),
+  as.Date(time(ts_pm25_wk)))
+names(components1) = c("Trend", "Seasonality", "Date")
+# components1 = pivot_longer(components1, cols =c("Trend","Seasonality"))
+# names(components1) = c("Date", "Component", "Value")
+
+components3 = cbind.data.frame(
+  colMeans(model3$state.contributions[-(1:500),"trend",]),
+  colMeans(model3$state.contributions[-(1:500),"seasonal.52.1",]),
+  as.Date(time(ts_pm25_wk)))
+names(components3) = c("Trend", "Seasonality", "Date")
+# components3 = pivot_longer(components3, cols =c("Trend","Seasonality"))
+# names(components3) = c("Date", "Component", "Value")
+
+ggplot(data=components, aes(x=Date, y=Value)) + geom_line() +
+  theme_bw() + theme(legend.title = element_blank()) + ylab("") + xlab("") +
+  facet_grid(Component ~ ., scales="free") + guides(colour=FALSE) +
+  theme(axis.text.x=element_text(angle = -90, hjust = 0))
+dev.off()
 
 # Compare models
 CompareBstsModels(list("Model 1" = model1,
