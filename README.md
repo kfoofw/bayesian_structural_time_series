@@ -1,8 +1,13 @@
 # bayesian_structured_time_series
 
-This repo is my personal repo for learning how to use bayesian structured time series (bsts) for time series analysis. Using bsts as a foundation, one can perform causal inference of an intervention on time series data by modelling the past and using it as a counterfactual baseline.
+This repo is my personal repo for learning how to use bayesian structured time series (`bsts`) for time series analysis. Using `bsts` as a foundation, one can perform causal inference of an intervention on time series data by modelling the past and using it as a counterfactual baseline.
 
-Links to readings will be kept on this README document for reference in the next section.
+Links to readings will be kept on this README document for reference.
+
+# Side Project!
+
+1. [Causal Analysis of PM 2.5 Air Quality in Los Angeles During Quarantine using CausalImpact and BSTS](https://github.com/kfoofw/bayesian_structured_time_series/blob/master/analysis/analysis_pm25.md)
+
 
 # Readings
 

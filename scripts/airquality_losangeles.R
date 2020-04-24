@@ -44,7 +44,7 @@ ggplot(dat_pm25_wk, aes(x = week, y = pm25))+
        x = "Date",
        y = "PM 2.5")
 
-# Post Period of  early march
+# Post Intervention Period is filled with NA
 dat_pm25_wk_causal <- dat_pm25_wk %>% 
   mutate(pm25 = replace(pm25, week >= as.Date("2020-03-04"), NA))
 
@@ -60,8 +60,8 @@ ss <- AddSeasonal(ss, ts_pm25_wk, nseasons = 52)
 model1 <- bsts(ts_pm25_wk,
                state.specification = ss,
                niter = 1000)
-plot(model1)
-plot(model1, "components")
+plot(model1, main = "Model 1", ylim = c(20,100))
+plot(model1, "components", ylim = c(-20, 80))
 
 # Local trend, weekly-seasonal, monthly-seasonal
 ss2 <- AddLocalLinearTrend(list(), ts_pm25_wk)
@@ -72,20 +72,20 @@ ss2 <- AddSeasonal(ss2, ts_pm25_wk, nseasons = 13, season.duration = 4)
 model2 <- bsts(ts_pm25_wk,
                state.specification = ss2,
                niter = 1000)
-plot(model2)
-plot(model2, "components")
+plot(model2, main = "Model 2", ylim = c(20,100))
+plot(model2, "components", ylim = c(-20,80))
 
-# Local trend, weekly-seasonal
+# Semi Local trend, weekly-seasonal
 ss3 <- AddSemilocalLinearTrend(list(), ts_pm25_wk)
 # Add weekly seasonal
 ss3 <- AddSeasonal(ss3, ts_pm25_wk, nseasons = 52)
 model3 <- bsts(ts_pm25_wk,
                state.specification = ss3,
                niter = 1000)
-plot(model3)
-plot(model3, "components")
+plot(model3, main = "Model 3", ylim = c(20,100))
+plot(model3, "components", ylim = c(-20,80))
 
-# Local trend, weekly-seasonal, monthly-seasonal
+# Semi Local trend, weekly-seasonal, monthly-seasonal
 ss4 <- AddSemilocalLinearTrend(list(), ts_pm25_wk)
 # Add weekly seasonal
 ss4 <- AddSeasonal(ss4, ts_pm25_wk, nseasons = 52)
@@ -94,8 +94,9 @@ ss4 <- AddSeasonal(ss4, ts_pm25_wk, nseasons = 13, season.duration = 4)
 model4 <- bsts(ts_pm25_wk,
                state.specification = ss4,
                niter = 1000)
-plot(model4)
-plot(model4, "components")
+plot(model4, main = "Model 4", ylim = c(20,100))
+plot(model4, "components", ylim = c(-20,80))
+
 
 # Compare models
 CompareBstsModels(list("Model 1" = model1,
@@ -110,14 +111,14 @@ pre.period <- as.Date(c("2016-01-11", "2020-03-04"))
 post.period <- as.Date(c("2020-03-04", "2020-04-16"))
 
 # Obtain post period data
-dat_pm25_wk_trunc_post <- dat_pm25_wk_trunc %>% 
+dat_pm25_wk_causal_post <- dat_pm25_wk %>% 
   filter(week >= as.Date("2020-03-04"))
 
 # Use model 3 for causal impact
 impact <- CausalImpact(bsts.model = model3,
-                       post.period.response = dat_pm25_wk_trunc_post$pm25, alpha = 0.05)
+                       post.period.response = dat_pm25_wk_causal_post$pm25, alpha = 0.05)
 plot(impact)
 
-impact$summary
+summary(impact)
 
-impact$report
+summary(impact, "report")
