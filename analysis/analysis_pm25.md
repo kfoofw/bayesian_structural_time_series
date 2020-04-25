@@ -3,7 +3,7 @@
 
 With the recent COVID-19 pandemic, the implementation of quarantine and social distancing by various governments created a ripple of effects that affect cities all around the world. The key driver behind this was the halting of economic activity which brought about a big crunch in the global economy. In the early phase of the COVID-19 pandemic, the media reported that [the carbon emissions in China was reduced drastically](https://www.nytimes.com/2020/02/26/climate/nyt-climate-newsletter-coronavirus.html) in mid Feb 2020.  This gave me an idea as I wanted to try out some time series analysis on air quality in certain cities with the implementation of a city-wide quarantine measure. 
 
-In this article, I will be assessing the air quality of Los Angeles and the impact of the measures taken as part of the public health emergency declared in LA County with relation to COVID-19. The following points frame my analysis:
+In this article, I will be assessing the air quality of Los Angeles and the impact of the measures taken as part of the public health emergency declared in LA County with relation to COVID-19. The article will also dive into the R code that was used in the analysis with the `bsts` and `CausalImpact` packages. The following points frame my analysis:
 - The type of air quality used for this analysis is the PM2.5, which stands for atmospheric particulate matter with a diameter of less than 2.5 micrometers. 
 - The implementation of the public health emergency will be perceived as an "intervention". The date of this intervention will be explained in more detail.
 - Los Angeles was chosen because it is such an iconic city that is typically bustling with activity. It is also known for its traffic congestion which I postulate to be a contributing factor to the PM 2.5 levels.
@@ -84,7 +84,7 @@ We can first model the time series of the PM2.5 data using the structure time se
     <img src=../img/bsts_full_season.png>
 </div>
 
-As observed, this model is only a univariate series with no exogenous factors. To improve the modelling of the series, one can utilise exogenous factors with the "spike and slab" feature selection process that comes with the `bsts` package. However, in view that we are pursuing a causal analysis of an intervention variable that has wide spread effects, it is difficult to find exogenous variables that will help enhance the prediction of the counterfactual baseline. Thus, I will not pursue the additional modelling. 
+As observed, this model is only a univariate series with no exogenous factors. To improve the modelling of the series, one can utilise exogenous factors with the "spike and slab" feature selection process that comes with the `bsts` package. However, in view that we are pursuing a causal analysis of an intervention variable that has wide spread effects, it is difficult to find unaffected exogenous variables that will help enhance the prediction of the counterfactual baseline. Thus, I will not pursue the additional modelling of exogenous variables. 
 
 In terms of modelling choices, I explored 4 models that were a combination of 2 by 2 factors:
 - ### __Trend Drift Component δ:__
