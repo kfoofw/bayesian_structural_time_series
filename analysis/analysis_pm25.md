@@ -1,17 +1,17 @@
 
-# Causal Analysis of PM 2.5 Air Quality in Los Angeles During Quarantine using CausalImpact and BSTS
+# Causal Analysis of the Impact of a Public Health Emergency on PM 2.5 Air Quality in Los Angeles during COVID-19
 
-With the recent COVID-19 pandemic, the implementation of quarantine and social distancing by various governments created a ripple of effects that affect cities all around the world. The key driver behind this was the halting of economic activity which brought about a big crunch in the global economy. In the early phase of the COVID-19 crisis, the media reported that [the carbon emissions in China was reduced drastically](https://www.nytimes.com/2020/02/26/climate/nyt-climate-newsletter-coronavirus.html) in mid Feb 2020.  This gave me an idea as I wanted to try out some time series analysis on air quality in certain cities with the implementation of a city-wide quarantine measure. 
+With the recent COVID-19 pandemic, the implementation of quarantine and social distancing by various governments created a ripple of effects that affect cities all around the world. The key driver behind this was the halting of economic activity which brought about a big crunch in the global economy. In the early phase of the COVID-19 pandemic, the media reported that [the carbon emissions in China was reduced drastically](https://www.nytimes.com/2020/02/26/climate/nyt-climate-newsletter-coronavirus.html) in mid Feb 2020.  This gave me an idea as I wanted to try out some time series analysis on air quality in certain cities with the implementation of a city-wide quarantine measure. 
 
-In this article, I will be assessing the air quality of Los Angeles city and the impact of the quarantine. The following points frame my analysis:
+In this article, I will be assessing the air quality of Los Angeles and the impact of the measures taken as part of the public health emergency declared in LA County with relation to COVID-19. The following points frame my analysis:
 - The type of air quality used for this analysis is the PM2.5, which stands for atmospheric particulate matter with a diameter of less than 2.5 micrometers. 
-- The implementation of the quarantine will be perceived as an "intervention". The date of this intervention will be explained in more detail.
+- The implementation of the public health emergency will be perceived as an "intervention". The date of this intervention will be explained in more detail.
 - Los Angeles was chosen because it is such an iconic city that is typically bustling with activity. It is also known for its traffic congestion which I postulate to be a contributing factor to the PM 2.5 levels.
-- The air quality data will be aggregated by calendar week
+- The air quality data will be aggregated by calendar weeks.
 
-## Data Source 
+## Data Sources
 
-The data for this was taken from [The World Air Quality Project](https://aqicn.org/city/losangeles/los-angeles-north-main-street/). The particular data measurement point is at North Main Street, which is pretty central in terms of Los Angeles.
+The data for this was taken from [The World Air Quality Project](https://aqicn.org/city/losangeles/los-angeles-north-main-street/). The particular data measurement point is at North Main Street, which is pretty central within Los Angeles.
 
 <p align="center">
     <img src=../img/aqicn_la.png>
@@ -57,7 +57,7 @@ Taking that into account, the aggregation by calendar week basis produced a plot
     <img src=../img/eda3.png>
 </p>
 
-In this analysis, the impact of the public health emergency that was declared is perceived as an intervention. With the intention to slow the spread of the virus, the government mandated several measures such as social distancing, travel bans, closure of non-essential services. This drastically reduced economic activity, which can be seen as a form. Not only are the measures a sudden change, they are implemented for a prolonged period, which makes the quarantine initiative an interesting candidate for a causal analysis.
+In this analysis, the impact of the declared public health emergency is perceived as an intervention. With the intention to slow the spread of the virus, the government mandated several measures such as social distancing, travel bans, closure of non-essential services. This drastically reduced economic activity, which can be seen as a form. Not only are the measures a sudden change, they are implemented for a prolonged period, which makes the quarantine initiative an interesting candidate for a causal analysis.
 
 Based on the data, we do see a sharp reduction in terms of the weekly PM2.5 data. However, we can't conclude that the reduction is statistically significant. This brings us to the next step of time series analysis using structured time series analysis.
 
@@ -250,7 +250,7 @@ The plots provide the MCMC sampling of the structured time series given the obse
 
 Based on the models, we see that the local linear trend was much smoother compared to the semi local linear trend. This could be due to the fact that the drift component in the semi local linear trend comprised of more variables (D, ρ) that allowed for more extreme stochasticity. This allowed for the semi-local linear trend models to capture certain high spike points such as in Jan 2018 that were not captured by the trends in the local linear trend models. 
 
-This is also manifested in the difference in the seasonal components between Model 1 and Model 3. Model 1 (local linear) attributes more of the high-deviation spikes to the 52 weekly seasonal component, but Model 3 (semi local linear) attributes those high-deviation spikes to be more of a trend stochasticity.
+This is also manifested in the difference in the seasonal components between Model 1 and Model 3. Model 1 (local linear) attributes more of the high-deviation spikes to the 52 weekly seasonal component, but Model 3 (semi local linear) attributes those high-deviation spikes to be more of a trend stochasticity. As such, the seasonality pattern in Model 3 is more "compact" around its mean value compared to Model 1.
 
 ```{r}
 # Compare seasonal component of model 1 and model 3
@@ -282,7 +282,6 @@ abline(h = -10, col = "red")
     <h> Model 3 (Semi-Local Linear) Components</h>
     <img src=../img/model3_season.png>
 </div>
-
 
 Using the cumulative absolute error of 1 step prediction forward prediction of the different models, we see that Model 3 (dotted blue) is the best model as it has the lowest cumulative error while Model 2 (dashed red) has the highest cumulative error.
 
