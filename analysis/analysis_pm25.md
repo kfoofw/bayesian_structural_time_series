@@ -63,7 +63,7 @@ Based on the data, we do see a sharp reduction in terms of the weekly PM2.5 data
 
 ## Structured Time Series Modelling
 
-Using both the `CausalImpact` and `bsts` package, we can utilise the models of structured time series to create a counterfactual baseline as a projection of what would have happened if the intervention event did not occur.
+Using both `CausalImpact` and `bsts` packages, we can utilise the models of structured time series to create a counterfactual baseline as a projection of what would have happened if the intervention event did not occur.
 
 We can first model the time series of the PM2.5 data using the structure time series. The model assumes the following state components: 
 - Observed states y
