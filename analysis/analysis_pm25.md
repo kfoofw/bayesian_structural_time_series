@@ -369,7 +369,7 @@ The probability of obtaining this effect by chance is very small (Bayesian one-s
 
 One major limitation of this analysis is that there needs to be strong assumptions about the flow of causality. Based on my understanding of what happened with Covid-19, my postulation is that the intervention of public health emergency rendered a drastic reduction in human movement traffic and economic activity. This resulted in lesser energy consumed, which brought about a reduction of PM2.5 air particles in Los Angeles. Thus, this analysis is only true with the assumptions that there are no other confounding factors that may have affected PM2.5 data.
 
-Another limitation is that the model can be further improved if we have exogenous data that could help improve the prediction of the counterfactual baseline. If we had such data, the uncertainty measured by the model would have been reduced greatly. As mentioned previously, the effects of the public health emergency and its measures are so prevalent that it is difficult to find an instrument variable that was not affected by the intervention.
+Another limitation is that the model can be further improved if we have exogenous data that could help improve the prediction of the counterfactual baseline. If we had such data, the uncertainty measured by the model would have been reduced greatly, which would enable us to detect any corresponding signals from the intervention more easily. As mentioned previously, the effects of the public health emergency and its measures are so prevalent that it is difficult to find an instrument variable that was not affected by the intervention.
 
 ## Summary
 
