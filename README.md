@@ -26,7 +26,9 @@ Package papers and tutorials:
 - [INFERRING CAUSAL IMPACT USING BAYESIAN STRUCTURAL TIME-SERIES MODELS](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/41854.pdf)
 - [R package bsts tutorial](http://hedibert.org/wp-content/uploads/2016/05/bsts-tutorial.pdf)
 - [Causal Impact using Bayesian Structural Time-Series Models](https://rstudio-pubs-static.s3.amazonaws.com/348164_d03363ac0c864fe7885343d3c58eda2a.html)
+- [Software for Bayesian Structural Time Series](https://drive.google.com/file/d/14US56VzanuLt03XBkoAGzLy0gDEreZUc/view)
 - [MineThatData Forecasting Challenge: proposed solution with Bayesian Structural Time Series models](http://sisifospage.tech/2017-10-30-forecasting-bsts.html)
+
 
 # R packages
 
